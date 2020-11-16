@@ -21,12 +21,13 @@ def home():
 # Route for handling file upload
 @app.route('/process',methods=["POST"])
 def process():
-    
     f=request.files['file']
     if f.filename.split('.')[1] in app.config["ALLOWED_EXTENTIONS"]:
         f.save(os.path.join(app.config['UPLOAD_FOLDER'],f.filename))
         return redirect(request.referrer)
     else:
         return "Invalid file extention"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
