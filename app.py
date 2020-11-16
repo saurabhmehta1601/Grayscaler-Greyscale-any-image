@@ -1,28 +1,32 @@
-from flask import Flask,render_template,redirect,request
+from flask import (Flask,redirect,render_template,request)
 from werkzeug.utils import secure_filename
 import os
 
-
+# Creating flask app instance
 app=Flask(__name__)
 
-UPLOAD_FOLDER='./static/process'
+# Setting Upload folder and extentions for file 
 ALLOWED_EXTENTIONS={'png','jpg','jpeg'}
-
-app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
+UPLOAD_FOLDER='./images'
+#################
 app.config['ALLOWED_EXTENTIONS']=ALLOWED_EXTENTIONS
+app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
 
+
+# Creating homepage route
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/process',methods=["GET","POST"])
+# Route for handling file upload
+@app.route('/process',methods=["POST"])
 def process():
+    
     f=request.files['file']
-    if f.filename.split('.')[1] in app.config['ALLOWED_EXTENTIONS']:
+    if f.filename.split('.')[1] in app.config["ALLOWED_EXTENTIONS"]:
         f.save(os.path.join(app.config['UPLOAD_FOLDER'],f.filename))
         return redirect(request.referrer)
     else:
-        return "File extention not allowed "
+        return "Invalid file extention"
 if __name__ == "__main__":
     app.run(debug=True)
-
